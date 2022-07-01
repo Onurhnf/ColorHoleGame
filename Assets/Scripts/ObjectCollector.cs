@@ -19,7 +19,10 @@ public class ObjectCollector : MonoBehaviour
 
                 if (LevelManager.Instance.objectsInScene==0)
                 {
+                    Game.isGameover = true;
                     UIManager.Instance.levelCompletedText.gameObject.GetComponent<TextMeshProUGUI>().enabled = true;
+
+                    LevelManager.Instance.PlayWinFx();
 
                     StartCoroutine(NextLevel());
                     
