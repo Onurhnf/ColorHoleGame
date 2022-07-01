@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,23 +21,25 @@ public class UIManager : MonoBehaviour
 	[Header("Level Progress UI")]
 	//sceneOffset: because you may add other scenes like (Main menu, ...)
 	[SerializeField] int sceneOffset;
+
+	public bool showWinText;
 	[SerializeField] TMP_Text nextLevelText;
 	[SerializeField] TMP_Text currentLevelText;
 	[SerializeField] Image progressFillImage;
 
 	[Space]
-	[SerializeField] TMP_Text levelCompletedText;
+	public TMP_Text levelCompletedText;
 
-	[Space]
-	//white fading panel at the start
-	[SerializeField] Image fadePanel;
+	
 
 	void Start()
 	{
-		FadeAtStart();
+		
 
 		//reset progress value
 		progressFillImage.fillAmount = 0f;
+		
+		levelCompletedText.gameObject.GetComponent<TextMeshProUGUI>().enabled = false;
 
 		SetLevelProgressText();
 	}
@@ -53,17 +53,17 @@ public class UIManager : MonoBehaviour
 
 	public void UpdateLevelProgress()
 	{
-		
+		float fill = 1f - ((float)LevelManager.Instance.objectsInScene / LevelManager.Instance.totalObjects);
+		progressFillImage.fillAmount = fill;
 	}
 
 	//--------------------------------------
 	public void ShowLevelCompletedUI()
 	{
-		//fade in the text (from 0 to 1) with 0.6 seconds
+
+
+		levelCompletedText.GetComponent<MeshRenderer>().enabled = showWinText;
 	}
 
-	public void FadeAtStart()
-	{
-		//fade out the panel (from 1 to 0) with 1.3 seconds
-	}
+
 }

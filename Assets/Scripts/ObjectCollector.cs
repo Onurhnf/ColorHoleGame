@@ -1,22 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ObjectCollector : MonoBehaviour
 {
    private void OnTriggerEnter(Collider other) {
 
-        string tag = other.tag;
-
-        if (tag.Equals("GoodObjects"))
+        if (!Game.isGameover)
         {
-            Debug.Log("good");
+            string tag = other.tag;
+
+            if (tag.Equals("GoodObjects"))
+            {
+                Destroy(other.gameObject);
+                LevelManager.Instance.objectsInScene--;
+                UIManager.Instance.UpdateLevelProgress();
+
+                if (LevelManager.Instance.objectsInScene==0)
+                {
+                    UIManager.Instance.levelCompletedText.gameObject.GetComponent<TextMeshProUGUI>().enabled = true;
+
+                    StartCoroutine(NextLevel());
+                    
+                }
+
+
+
+            }
+
+            if (tag.Equals("BadObjects"))
+            {
+                Destroy(other.gameObject);
+                Game.isGameover = true;
+                CameraShake.Shake(.3f, .032f);
+                StartCoroutine(RestartLevel());
+                
+            }
         }
 
-        if (tag.Equals("BadObjects"))
+        
+        IEnumerator NextLevel()
         {
-            Debug.Log("bad");
+            yield return new WaitForSeconds(2f);
+             LevelManager.Instance.LoadNextLevel();
+
         }
+
+        IEnumerator RestartLevel()
+        {
+            yield return new WaitForSeconds(.5f);
+            LevelManager.Instance.RestartLevel();
+
+        }
+        
+       
+
+         
     }
 
 
